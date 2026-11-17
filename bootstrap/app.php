@@ -19,4 +19,16 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// Mengarahkan storage ke direktori /tmp yang writable di Vercel
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+    $storagePath = '/tmp/storage';
+    if (!is_dir($storagePath . '/framework/views')) {
+        @mkdir($storagePath . '/framework/views', 0777, true);
+        @mkdir($storagePath . '/framework/cache/data', 0777, true);
+        @mkdir($storagePath . '/framework/sessions', 0777, true);
+        @mkdir($storagePath . '/logs', 0777, true);
+    }
+    $app->useStoragePath($storagePath);
+}
+
 return $app;
